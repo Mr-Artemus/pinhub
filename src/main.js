@@ -15,8 +15,17 @@ if (splittedUrl[3] == "") {
         pinned.innerHTML = `<h2 class="f4 hide-sm hide-md mb-1 f5">Pinned Repositories</h2>Loading...`;
         pinned.style.paddingBottom = "24px";
 
-        // Appending the new section to the homepage
-        div.children[0].after(pinned);
+        // check if the new element should be placed at first position
+        if(div.children[0].childElementCount === 1 && div.children[0].firstElementChild.id.startsWith("details")) {            
+            // Appending the new section to the homepage
+            div.insertBefore(pinned, div.children[1]);
+        } else {
+            // Adding a simple padding on the top
+            pinned.style.paddingTop = "24px";
+            
+            // Appending the new section to the homepage
+            div.insertBefore(pinned, div.children[0]);
+        }
 
         getPinnedRepos().then(repos => {
             // Getting the new section from the homepage
