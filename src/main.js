@@ -1,18 +1,3 @@
-/*
-browser.storage.local.set({"pinnedRepos": [
-    [
-        "Mr-Artemus/paypal-integration",
-        "https://github.com/Mr-Artemus/paypal-integration",
-        "https://avatars.githubusercontent.com/u/31190188?s=16&v=4"
-    ],
-    [
-        "barthofu/tscord-template",
-        "https://github.com/barthofu/tscord-template",
-        "https://avatars.githubusercontent.com/u/66025667?s=16&v=4"
-    ]
-]});
-*/
-
 // Getting the current URL
 const url = window.location.href;
 const splittedUrl = url.split("/");
@@ -40,7 +25,7 @@ if (splittedUrl[3] == "") {
             // Cheking is the pinned repos section is loaded
             if (pinned) {
                 // Checking if the pinned repos is empty
-                if (repos.length == 0) {
+                if (!Array.isArray(repos) || repos.length == 0) {
                     // Setting the pinned repos section to the default text
                     pinned.innerHTML = `<h2 class="f4 hide-sm hide-md mb-1 f5">Pinned Repositories</h2>No pinned repositories`;
                 } else {
@@ -82,57 +67,148 @@ if (splittedUrl[3] == "") {
         // Getting the buttons list DOM element
         const buttonList = div.firstElementChild.lastElementChild;
 
-        // Creating the new button
-        const buttonElement = document.createElement("li");
+        // Checking if the new button is already present
+        if(buttonList.innerHTML.indexOf("btn-homepage-pin") === -1) {
+            // Getting the pinned repos list to check if the repo is pinned
+            getPinnedRepos().then(repos => {
+                // Checking if the repo is pinned
+                let repo = repos.find(element => element[0] === `${splittedUrl[3]}/${splittedUrl[4]}`);
 
-        // Getting the pinned repos list to check if the repo is pinned
-        getPinnedRepos().then(repos => {
-            // Checking if the repo is pinned
-            console.log(repos.map(element => console.log(element[0] + " ##### " + `${splittedUrl[3]}/${splittedUrl[4]}`)))
-            if (repos.find(element => element[0] === `${splittedUrl[3]}/${splittedUrl[4]}`)) {
-                // Setting the button content
-                buttonElement.innerHTML = `
-                    <div class="float-left" data-test-selector="pin-repo-button">
-                        <button title="Pin this repository on the homepage" type="submit" data-view-component="true" class="btn-sm btn btn-primary">
-                            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-pin mr-2">
-                                <path fill-rule="evenodd" d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"></path>
-                            </svg>
-                            Pinned to Homepage
-                        </button>
-                    </div>`;
-            } else {
-                // Setting the button content
-                buttonElement.innerHTML = `
-                    <div class="float-left" data-test-selector="pin-repo-button">
-                        <button title="Pin this repository on the homepage" type="submit" data-view-component="true" class="btn-sm btn">
-                            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-pin mr-2">
-                                <path fill-rule="evenodd" d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"></path>
-                            </svg>
-                            Pin to Homepage
-                        </button>
-                    </div>`;
-            }
+                // Creating the new button
+                let buttonElement = document.createElement("li");
+                buttonElement.id = "btn-homepage-pin";
 
-            buttonList.appendChild(buttonElement);
-        }).catch(console.error);
+                // Setting the button content
+                if(repo) {
+                    buttonElement.innerHTML = `
+                        <div class="float-left" data-test-selector="pin-repo-button">
+                            <button title="Pin this repository on the homepage" type="submit" data-view-component="true" class="btn-sm btn btn-primary">
+                                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-pin mr-2">
+                                    <path fill-rule="evenodd" d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"></path>
+                                </svg>
+                                Pinned to Homepage
+                            </button>
+                        </div>`;
+                } else {
+                    buttonElement.innerHTML = `
+                        <div class="float-left" data-test-selector="pin-repo-button">
+                            <button title="Pin this repository on the homepage" type="submit" data-view-component="true" class="btn-sm btn">
+                                <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-pin mr-2">
+                                    <path fill-rule="evenodd" d="M4.456.734a1.75 1.75 0 012.826.504l.613 1.327a3.081 3.081 0 002.084 1.707l2.454.584c1.332.317 1.8 1.972.832 2.94L11.06 10l3.72 3.72a.75.75 0 11-1.061 1.06L10 11.06l-2.204 2.205c-.968.968-2.623.5-2.94-.832l-.584-2.454a3.081 3.081 0 00-1.707-2.084l-1.327-.613a1.75 1.75 0 01-.504-2.826L4.456.734zM5.92 1.866a.25.25 0 00-.404-.072L1.794 5.516a.25.25 0 00.072.404l1.328.613A4.582 4.582 0 015.73 9.63l.584 2.454a.25.25 0 00.42.12l5.47-5.47a.25.25 0 00-.12-.42L9.63 5.73a4.581 4.581 0 01-3.098-2.537L5.92 1.866z"></path>
+                                </svg>
+                                Pin to Homepage
+                            </button>
+                        </div>`;
+                }
+
+                // Appending the button to the buttons list
+                buttonElement = buttonList.appendChild(buttonElement);
+                const button = buttonElement.firstElementChild.firstElementChild;
+
+                // Adding the event listener to the button
+                buttonElement.addEventListener("click", () => {
+                    // Checking if the repo is pinned
+                    if(repo) {
+                        // Removing the repo from the pinned repos list
+                        removePinnedRepo(repo[0]).then(() => {
+                            // Update the button
+                            button.classList.remove("btn-primary");
+                            button.lastChild.textContent = "Pin to Homepage";
+
+                            // Updating state of the current repo
+                            repo = undefined;
+                        }).catch(console.error);
+                    } else {
+                        // Adding the repo to the pinned repos list
+                        addPinnedRepo(`${splittedUrl[3]}/${splittedUrl[4]}`, splittedUrl.slice(0,4).join("/") + ".png?size=16").then(newRepo => {
+                            // Update the button
+                            button.classList.add("btn-primary");
+                            button.lastChild.textContent = "Pinned to Homepage";
+
+                            // Updating state of the current repo
+                            repo = newRepo;
+                        }).catch(console.error);
+                    }
+                })
+            }).catch(console.error);
+        }
     }
 }
 
 function getPinnedRepos() {
     return new Promise(function(resolve, reject) {
-        if(browser) {
+        if(typeof(browser) !== "undefined" && browser.storage) {
             // Getting the pinned repos from the browser storage
             browser.storage.local.get("pinnedRepos").then(function(repos) {
                 // return the pinned repos
-                resolve(repos.pinnedRepos);
+                resolve(repos.pinnedRepos || []);
             }).catch(reject);
             
-        } else if(chrome) {
+        } else if(typeof(chrome) !== "undefined" && chrome.storage) {
             // Getting the pinned repos from the chrome storage
             chrome.storage.local.get("pinnedRepos", function(repos) {
+                // Pass any observed errors down the promise chain.
+                if (chrome.runtime.lastError) return reject(chrome.runtime.lastError);
+                
                 // return the pinned repos
-                resolve(repos.pinnedRepos);
+                resolve(repos.pinnedRepos || []);
             });
         }
+    });
+}
+
+function addPinnedRepo(repo, image) {
+    return new Promise(function(resolve, reject) {
+        // Getting the pinned repos from the browser storage
+        getPinnedRepos().then(repos => {
+            // Adding the repo to the pinned repos list
+            repos.push([repo, "https://github.com/" + repo, image]);
+
+            // Saving the pinned repos to the browser storage
+            if(typeof(browser) !== "undefined" && browser.storage) {
+                // Saving the pinned repos to the browser storage
+                browser.storage.local.set({pinnedRepos: repos}).then(function() {
+                    // resolving the promise
+                    resolve(repos[repos.length - 1]);
+                }).catch(reject);
+            } else if(typeof(chrome) !== "undefined" && chrome.storage) {
+                // Saving the pinned repos to the chrome storage
+                chrome.storage.local.set({pinnedRepos: repos}, function() {
+                    // Pass any observed errors down the promise chain.
+                    if (chrome.runtime.lastError) return reject(chrome.runtime.lastError);
+                    
+                    // resolving the promise
+                    resolve(repos[repos.length - 1]);
+                });
+            }
+        }).catch(reject);
+    });
+}
+
+function removePinnedRepo(repo) {
+    return new Promise(function(resolve, reject) {
+        // Getting the pinned repos from the browser storage
+        getPinnedRepos().then(repos => {
+            // Removing the repo from the pinned repos list
+            repos = repos.filter(el => el[0] !== repo);
+
+            // Saving the pinned repos to the browser storage
+            if(typeof(browser) !== "undefined" && browser.storage) {
+                // Saving the pinned repos to the browser storage
+                browser.storage.local.set({pinnedRepos: repos}).then(function() {
+                    // resolving the promise
+                    resolve();
+                }).catch(reject);
+            } else if(typeof(chrome) !== "undefined" && chrome.storage) {
+                // Saving the pinned repos to the chrome storage
+                chrome.storage.local.set({pinnedRepos: repos}, function() {
+                    // Pass any observed errors down the promise chain.
+                    if (chrome.runtime.lastError) return reject(chrome.runtime.lastError);
+
+                    // resolving the promise
+                    resolve();
+                });
+            }
+        }).catch(reject);
     });
 }
