@@ -38,7 +38,7 @@ if (splittedUrl[3] == "") {
                             <li class="private source no-description">
                                 <div class="width-full d-flex mt-2">
                                     <a class="mr-2 d-flex flex-items-center" href="${element[1]}">
-                                        <img src="${element[2]}" class=" avatar avatar-user avatar-small circle" alt="stockit" aria-label="Repository" width="16" height="16">
+                                        <img src="${element[2]}" class=" avatar avatar-user avatar-small circle" alt="${element[0].split("/")[0]}" aria-label="Repository" width="16" height="16">
                                     </a>
                                     <div class="wb-break-word">
                                         <a class="color-fg-default lh-0 mb-2 markdown-title" href="${element[1]}">
@@ -167,13 +167,25 @@ function addPinnedRepo(repo, image) {
             // Saving the pinned repos to the browser storage
             if(typeof(browser) !== "undefined" && browser.storage) {
                 // Saving the pinned repos to the browser storage
-                browser.storage.local.set({pinnedRepos: repos}).then(function() {
+                browser.storage.local.set({pinnedRepos: repos.sort((a, b) => {
+                    a = a[0].toLowerCase();
+                    b = b[0].toLowerCase();
+                    if (a > b) return 1;
+                    if (b > a) return -1;
+                    return 0;
+                })}).then(function() {
                     // resolving the promise
                     resolve(repos[repos.length - 1]);
                 }).catch(reject);
             } else if(typeof(chrome) !== "undefined" && chrome.storage) {
                 // Saving the pinned repos to the chrome storage
-                chrome.storage.local.set({pinnedRepos: repos}, function() {
+                chrome.storage.local.set({pinnedRepos: repos.sort((a, b) => {
+                    a = a[0].toLowerCase();
+                    b = b[0].toLowerCase();
+                    if (a > b) return 1;
+                    if (b > a) return -1;
+                    return 0;
+                })}, function() {
                     // Pass any observed errors down the promise chain.
                     if (chrome.runtime.lastError) return reject(chrome.runtime.lastError);
                     
