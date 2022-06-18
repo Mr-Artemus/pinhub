@@ -14,6 +14,7 @@ if (splittedUrl[3] == "") {
         pinned.id = "pinned-repos";
         pinned.innerHTML = `<h2 class="f4 hide-sm hide-md mb-1 f5">Pinned Repositories</h2>Loading...`;
         pinned.style.paddingBottom = "24px";
+        pinned.setAttribute("data-repository-hovercards-enabled", "");
 
         // check if the new element should be placed at first position
         if(div.children[0].childElementCount === 1 && div.children[0].firstElementChild.id.startsWith("details")) {            
@@ -46,11 +47,11 @@ if (splittedUrl[3] == "") {
                         output += `
                             <li class="private source no-description">
                                 <div class="width-full d-flex mt-2">
-                                    <a class="mr-2 d-flex flex-items-center" href="${element[1]}">
+                                    <a class="mr-2 d-flex flex-items-center" href="${element[1]}" data-hovercard-type="repository" data-hovercard-url="/${element[0]}/hovercard">
                                         <img src="${element[2]}" class=" avatar avatar-user avatar-small circle" alt="${element[0].split("/")[0]}" aria-label="Repository" width="16" height="16">
                                     </a>
                                     <div class="wb-break-word">
-                                        <a class="color-fg-default lh-0 mb-2 markdown-title" href="${element[1]}">
+                                        <a class="color-fg-default lh-0 mb-2 markdown-title" href="${element[1]}" data-hovercard-type="repository" data-hovercard-url="/${element[0]}/hovercard">
                                             ${element[0].replace("/", "<span class=\"color-fg-muted\">/</span>")}
                                         </a>
                                     </div>
