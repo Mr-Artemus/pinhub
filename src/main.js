@@ -44,15 +44,23 @@ if (splittedUrl[3] == "") {
                     
                     // Iterate over the pinned repos
                     repos.forEach(element => {
+                        // Creating the pinned repo list item
+
+                        const repoURL = element[1],
+                              repoName = element[0];
+                        const userURL = repoURL.split("/").slice(0, 4).join('/'),
+                              userName = repoName.split("/")[0],
+                              userAvatarURL = element[2];
+
                         output += `
                             <li class="private source no-description">
                                 <div class="width-full d-flex mt-2">
-                                    <a class="mr-2 d-flex flex-items-center" href="${element[1]}" data-hovercard-type="repository" data-hovercard-url="/${element[0]}/hovercard">
-                                        <img src="${element[2]}" class=" avatar avatar-user avatar-small circle" alt="${element[0].split("/")[0]}" aria-label="Repository" width="16" height="16">
+                                    <a class="mr-2 d-flex flex-items-center" href="${userURL}" data-hovercard-type="user" data-hovercard-url="/users/${userName}/hovercard">
+                                        <img src="${userAvatarURL}" class=" avatar avatar-user avatar-small circle" alt="${repoName.split("/")[0]}" aria-label="Repository" width="16" height="16">
                                     </a>
                                     <div class="wb-break-word">
-                                        <a class="color-fg-default lh-0 mb-2 markdown-title" href="${element[1]}" data-hovercard-type="repository" data-hovercard-url="/${element[0]}/hovercard">
-                                            ${element[0].replace("/", "<span class=\"color-fg-muted\">/</span>")}
+                                        <a class="color-fg-default lh-0 mb-2 markdown-title" href="${repoURL}" data-hovercard-type="repository" data-hovercard-url="/${repoName}/hovercard">
+                                            ${repoName.replace("/", "<span class=\"color-fg-muted\">/</span>")}
                                         </a>
                                     </div>
                                 </div>
