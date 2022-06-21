@@ -56,7 +56,7 @@ if (splittedUrl[3] == "") {
                             <li class="private source no-description">
                                 <div class="width-full d-flex mt-2">
                                     <a class="mr-2 d-flex flex-items-center" href="${userURL}" data-hovercard-type="user" data-hovercard-url="/users/${userName}/hovercard">
-                                        <img src="${userAvatarURL}" class=" avatar avatar-user avatar-small circle" alt="${repoName.split("/")[0]}" aria-label="Repository" width="16" height="16">
+                                        <img src="${userAvatarURL}" class=" avatar avatar-user avatar-small circle" alt="${userName}" aria-label="Repository" width="16" height="16">
                                     </a>
                                     <div class="wb-break-word">
                                         <a class="color-fg-default lh-0 mb-2 markdown-title" href="${repoURL}" data-hovercard-type="repository" data-hovercard-url="/${repoName}/hovercard">
